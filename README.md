@@ -76,21 +76,4 @@ environment.OPENAI_API_KEY=sk-xxxx
 docker compose up --build
 ```
 
-EMBEDDINGS_PROVIDER=openai
-OPENAI_API_KEY=sk-xxxx
-⚙️ API Endpoints
-Method Endpoint Description
-POST /upload Upload file(s), ingest, chunk, embed, store
-GET /documents List latest ingested CVs
-POST /search Hybrid search ({"query":"…","k":20})
-POST /search/graph Returns nodes + edges for force graph
-GET /health Health check
 
-
-Required .env vars:
-env
-Copy code
-IMAP_HOST=imap.yourmail.com
-IMAP_PORT=993
-IMAP_USER=hr-inbox@example.com
-IMAP_PASSWORD=changeme
