@@ -1,0 +1,70 @@
+
+services:
+  db:
+    image: ankane/pgvector
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: ragpass
+      POSTGRES_DB: ragcv
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./uploads:/uploads
+
+  ingester:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    command: ["python", "-m", "ingestion.pipeline"]
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./uploads:/uploads
+
+  email:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    command: ["python", "-m", "ingestion.email_ingest"]
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - ./uploads:/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    env_file: .env
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
