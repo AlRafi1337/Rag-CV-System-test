@@ -86,14 +86,6 @@ POST /search Hybrid search ({"query":"…","k":20})
 POST /search/graph Returns nodes + edges for force graph
 GET /health Health check
 
-Example:
-
-bash
-curl -X POST http://localhost:8000/search \
- -H "Content-Type: application/json" \
- -d '{"query": "senior python developer"}'
-📬 Email Ingestion
-The email worker polls IMAP inbox for UNSEEN messages and ingests attachments (PDF/DOCX).
 
 Required .env vars:
 env
